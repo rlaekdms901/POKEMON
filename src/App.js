@@ -4,15 +4,34 @@ import dummy from './dummy.js';
 import './grid.css';
 import './button.css';
 import './inputbox.css';
+import { useState, useEffect } from 'react';
 
 function App() {
+  const [DarkmodeOn, setDarkmode] = useState(false);
+  const [InputBox, setInputbox] = useState('');
+
+  const onChange = () => setDarkmode((current) => !current);
+  const onChange2 = (event) => setInputbox(event.target.value);
+
+  useEffect(() => {
+    if (DarkmodeOn) {
+      document.body.classList.add('dark-mode');
+    } else {
+      document.body.classList.remove('dark-mode');
+    }
+  }, [DarkmodeOn]);
+
+  const filterItem = InputBox
+    ? dummy.filter((item) => item.type.includes(InputBox.trim()))
+    : dummy;
   return (
     <>
       <div className="image-container">
-        {/* grid 나누기 */}
         <img className="styleImg" src={header} alt="header" />
+
+        {/* grid 나누기 */}
         <div className="grid-container">
-          {dummy.map((item) => (
+          {filterItem.map((item) => (
             <div className="grid-item" key={item.title}>
               <h1>{item.title}</h1>
               <p>{item.content}</p>
@@ -41,6 +60,7 @@ function App() {
               id="color_mode"
               name="color_mode"
               type="checkbox"
+              onChange={onChange}
             />
             <label
               className="btn-color-mode-switch-inner"
@@ -69,7 +89,13 @@ function App() {
 
         {/* input box */}
         <div className="wave-group">
-          <input required type="text" className="input" />
+          <input
+            required
+            type="text"
+            className="input"
+            value={InputBox}
+            onChange={onChange2}
+          />
           <span className="bar"></span>
           <label className="label">
             <span className="label-char" style={{ '--index': 0 }}>

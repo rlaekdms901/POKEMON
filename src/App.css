@@ -13,3 +13,20 @@
   height: auto;
   display: block; /* 이미지 밑에 요소가 올 수 있도록 설정 */
 }
+
+/* 기본 배경 색 */
+body {
+  background-color: white;
+  color: black;
+}
+
+/* dark 모드 시 색 변경 */
+body.dark-mode {
+  background-color: rgb(43, 43, 43);
+  color: white;
+}
+
+/* grid 색 변경 */
+body.dark-mode .grid-item {
+  background-color: #696969;
+}
