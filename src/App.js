@@ -5,13 +5,22 @@ import './grid.css';
 import './button.css';
 import './inputbox.css';
 import { useState, useEffect } from 'react';
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  useNavigate,
+} from 'react-router-dom';
+import PokemonDetail from './pokemondetail.js';
 
 function App() {
   const [DarkmodeOn, setDarkmode] = useState(false);
   const [InputBox, setInputbox] = useState('');
+  const navigate = useNavigate(); // navigate 함수 가져오기
 
   const onChange = () => setDarkmode((current) => !current);
   const onChange2 = (event) => setInputbox(event.target.value);
+
   useEffect(() => {
     if (DarkmodeOn) {
       document.body.classList.add('dark-mode');
@@ -24,6 +33,13 @@ function App() {
     ? dummy.filter((item) => item.type.includes(InputBox.trim()))
     : dummy;
 
+  const PokemonClick = (pokemon) => {
+    navigate('/pokemon-detail', { state: { pokemon } });
+  };
+  // 포켓몬을 click 했을 때 상세페이지로 이동할 수 있게 PokemonClick함수를 만들었음.
+  // navigate함수를 호출해서 경로로 이동하고 ,
+  //두 번째 인자로 전달하여 클릭한 포켓몬의 정보를 상세 페이지에서 사용할 수 있게 함.
+
   return (
     <>
       <div className="image-container">
@@ -32,7 +48,11 @@ function App() {
         {/* grid 나누기 */}
         <div className="grid-container">
           {filterItem.map((item) => (
-            <div className="grid-item card" key={item.title}>
+            <div
+              className="grid-item card"
+              key={item.title}
+              onClick={() => PokemonClick(item)}
+            >
               <img src={item.sprite} alt={`${item.title} sprite`}></img>
               <h1>{item.title}</h1>
               <span className="type-badge">{item.type}</span>
@@ -116,5 +136,14 @@ function App() {
     </>
   );
 }
-
-export default App;
+function AppWithRouter() {
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<App />} />
+        <Route path="/pokemon-detail" element={<PokemonDetail />} />
+      </Routes>
+    </Router>
+  );
+}
+export default AppWithRouter;
