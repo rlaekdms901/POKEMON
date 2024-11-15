@@ -5,7 +5,6 @@ import './pokemondetail.css';
 function PokemonDetail() {
   const location = useLocation();
   const { pokemon } = location.state || {};
-  //이전 페이지에서 전달된 포켓몬 정보 가져오기
 
   return (
     <div>
