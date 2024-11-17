@@ -58,6 +58,7 @@ img {
   font-weight: 600;
   cursor: grab;
 }
+
 /* dark 모드 시 색 변경 */
 body.dark-mode .stylediv {
   background-color: #696969;

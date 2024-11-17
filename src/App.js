@@ -14,6 +14,7 @@ import {
 import PokemonDetail from './pokemondetail.js';
 import Pagination from 'react-js-pagination';
 import { useLocation } from 'react-router-dom';
+import SplashScreen from './SplashScreen'; // 추가
 
 function App() {
   // 로컬 스토리지에서 초기값 설정
@@ -26,6 +27,12 @@ function App() {
   const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 상태 추가
   const itemsPerPage = 20; //페이지당 아이템 수
   const location = useLocation();
+
+  const [isSplashVisible, setSplashVisible] = useState(true);
+
+  const handleSplashFinish = () => {
+    setSplashVisible(false);
+  };
 
   const onChange = () =>
     setDarkmode((current) => {
@@ -48,7 +55,10 @@ function App() {
       document.body.classList.remove('dark-mode');
     }
   }, [DarkmodeOn]);
-
+  // 스플래시 화면이 보이는 동안은 아래 코드를 렌더링하지 않음
+  if (isSplashVisible) {
+    return <SplashScreen onSplashFinish={handleSplashFinish} />;
+  }
   const filterItem = InputBox
     ? dummy.filter((item) => item.type.includes(InputBox.trim()))
     : dummy;
