@@ -16,14 +16,30 @@ import Pagination from 'react-js-pagination';
 import { useLocation } from 'react-router-dom';
 
 function App() {
-  const [DarkmodeOn, setDarkmode] = useState(false);
+  // 로컬 스토리지에서 초기값 설정
+  const [DarkmodeOn, setDarkmode] = useState(() => {
+    const savedMode = localStorage.getItem('darkMode');
+    return savedMode === 'false' || savedMode === null ? false : true;
+  });
   const [InputBox, setInputbox] = useState('');
   const navigate = useNavigate(); // navigate 함수 가져오기
   const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 상태 추가
   const itemsPerPage = 20; //페이지당 아이템 수
+  const location = useLocation();
 
-  const onChange = () => setDarkmode((current) => !current);
+  const onChange = () =>
+    setDarkmode((current) => {
+      const newMode = !current;
+      localStorage.setItem('darkMode', newMode);
+      return newMode;
+    });
   const onChange2 = (event) => setInputbox(event.target.value);
+
+  useEffect(() => {
+    if (location.state?.currentPage) {
+      setCurrentPage(location.state.currentPage); // 이전 페이지 상태 복원
+    }
+  }, [location.state]);
 
   useEffect(() => {
     if (DarkmodeOn) {
@@ -38,7 +54,9 @@ function App() {
     : dummy;
 
   const PokemonClick = (pokemon) => {
-    navigate('/pokemon-detail', { state: { pokemon, currentPage } }); // currentPage 전달
+    navigate('/pokemon-detail', {
+      state: { pokemon, currentPage },
+    }); // currentPage 전달
   };
 
   // 포켓몬을 click 했을 때 상세페이지로 이동할 수 있게 PokemonClick함수를 만들었음.
@@ -60,13 +78,6 @@ function App() {
     window.scrollTo(0, 0);
   };
 
-  const location = useLocation();
-  useEffect(() => {
-    if (location.state?.currentPage) {
-      setCurrentPage(location.state.currentPage); // location.state에서 currentPage 값을 받아와서 설정
-    }
-  }, [location.state]);
-
   return (
     <>
       <div className="image-container">
@@ -82,7 +93,7 @@ function App() {
             >
               <img src={item.sprite} alt={`${item.title} sprite`}></img>
               <h1>{item.title}</h1>
-              <span className="type-badge">{item.type}</span>
+              <span className="styleType">{item.type}</span>
             </div>
           ))}
         </div>
@@ -118,6 +129,7 @@ function App() {
               name="color_mode"
               type="checkbox"
               onChange={onChange}
+              checked={DarkmodeOn}
             />
             <label
               className="btn-color-mode-switch-inner"
